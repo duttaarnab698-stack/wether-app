@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Lens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="theme-cloudy is-loading">
+    <div class="weather-bg" aria-hidden="true">
+      <div class="sun"></div>
+      <div class="moon"></div>
+      <div class="stars"></div>
+      <div class="cloud cloud-a"></div>
+      <div class="cloud cloud-b"></div>
+      <div class="cloud cloud-c"></div>
+      <div class="rain-layer"></div>
+    </div>
+
+    <div class="pull-indicator" id="pullIndicator">Pull to refresh</div>
+
+    <main class="phone-shell" id="app">
+      <section class="status glass" aria-live="polite">
+        <div class="spinner" id="loader"></div>
+        <p id="statusText">Allow location access</p>
+      </section>
+
+      <p class="error hidden" id="errorMessage"></p>
+
+      <header class="hero fade-in" id="currentSection">
+        <div class="clock-row">
+          <span id="liveClock">--:--</span>
+          <button class="ghost-button" id="refreshButton" type="button">Refresh</button>
+        </div>
+
+        <div class="location-pill">
+          <span class="pin" aria-hidden="true"></span>
+          <span id="locationLabel">Your Location</span>
+        </div>
+
+        <h1 id="cityName">Locating...</h1>
+        <p class="address-lines" id="addressLines">GPS weather will appear here</p>
+        <div class="location-meta" id="locationMeta" aria-label="Location details"></div>
+
+        <div class="weather-dial" aria-hidden="true">
+          <span class="dial-ring ring-a"></span>
+          <span class="dial-ring ring-b"></span>
+          <span class="dial-core"></span>
+          <span class="dial-cloud cloud-one"></span>
+          <span class="dial-cloud cloud-two"></span>
+          <span class="dial-rain"></span>
+        </div>
+
+        <div class="temperature-lockup">
+          <span id="temperature">--</span>
+          <sup id="temperatureUnit">°</sup>
+        </div>
+
+        <p class="condition" id="conditionText">Finding your sky</p>
+        <p class="high-low" id="highLowText">H: --  L: --</p>
+
+        <div class="forecast-strip glass" aria-label="Quick weather summary">
+          <div>
+            <span>Rain</span>
+            <strong id="quickRain">--</strong>
+          </div>
+          <div>
+            <span>Wind</span>
+            <strong id="quickWind">--</strong>
+          </div>
+          <div>
+            <span>Humidity</span>
+            <strong id="quickHumidity">--</strong>
+          </div>
+          <div>
+            <span>AQI</span>
+            <strong id="quickAqi">--</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="widgets" aria-label="Weather widgets">
+        <article class="widget wide glass" id="airQualityCard">
+          <div class="widget-title">Air Quality</div>
+          <div class="aqi-layout">
+            <div>
+              <strong id="aqiValue">--</strong>
+              <p id="aqiStatus">Waiting for AQI</p>
+            </div>
+            <div class="aqi-meter">
+              <span id="aqiMeterFill"></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="widget weather-map-card" id="mapSection">
+          <div id="weatherMap">
+            <div class="map-fallback" id="mapFallback">Loading Google weather map...</div>
+          </div>
+          <div class="map-label glass">Weather Map</div>
+          <div class="map-weather-panel glass">
+            <span id="mapPlace">Current Location</span>
+            <strong id="mapTemp">--°</strong>
+            <p id="mapCondition">Waiting for live weather</p>
+            <small id="mapMeta">Wind -- · Rain --</small>
+          </div>
+        </article>
+
+        <article class="widget glass">
+          <div class="widget-title">Feels Like</div>
+          <strong id="feelsLike">--</strong>
+          <p id="feelsLikeText">Comfort details loading</p>
+        </article>
+
+        <article class="widget glass">
+          <div class="widget-title">UV Index</div>
+          <strong id="uvIndex">--</strong>
+          <p id="uvStatus">--</p>
+          <div class="uv-track"><span id="uvFill"></span></div>
+        </article>
+
+        <article class="widget glass">
+          <div class="widget-title">Wind</div>
+          <div class="wind-compass">
+            <span class="needle" id="windNeedle"></span>
+            <span>N</span>
+          </div>
+          <strong id="windSpeed">--</strong>
+          <p id="windDirection">--</p>
+        </article>
+
+        <article class="widget glass">
+          <div class="widget-title">Humidity</div>
+          <strong id="humidity">--</strong>
+          <p id="humidityText">--</p>
+        </article>
+
+        <article class="widget glass">
+          <div class="widget-title">Visibility</div>
+          <strong id="visibility">--</strong>
+          <p id="visibilityText">--</p>
+        </article>
+
+        <article class="widget glass">
+          <div class="widget-title">Pressure</div>
+          <strong id="pressure">--</strong>
+          <p id="pressureText">Current pressure</p>
+        </article>
+
+        <article class="widget wide glass">
+          <div class="widget-title">Sunrise & Sunset</div>
+          <div class="sun-row">
+            <div>
+              <span>Sunrise</span>
+              <strong id="sunrise">--</strong>
+            </div>
+            <div>
+              <span>Sunset</span>
+              <strong id="sunset">--</strong>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav glass" aria-label="App navigation">
+      <button type="button" data-nav="mapSection"><span class="nav-glyph nav-map"></span><span>Map</span></button>
+      <button type="button" id="navLocation"><span class="nav-glyph nav-location"></span><span>Location</span></button>
+      <button type="button" id="openSearch"><span class="nav-glyph nav-search"></span><span>Search</span></button>
+      <button type="button" id="openMenu"><span class="nav-glyph nav-menu"></span><span>Menu</span></button>
+    </nav>
+
+    <aside class="search-sheet" id="searchSheet" aria-hidden="true">
+      <div class="sheet-panel glass">
+        <div class="sheet-grabber"></div>
+        <div class="sheet-header">
+          <h2>Weather</h2>
+          <button class="ghost-button" id="closeSearch" type="button">Done</button>
+        </div>
+        <form class="search-form" id="searchForm">
+          <input id="cityInput" type="search" placeholder="Search for a city" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+        <div class="recent-header">
+          <span>Recent Searches</span>
+          <button id="clearRecent" type="button">Clear</button>
+        </div>
+        <div class="recent-list" id="recentList"></div>
+      </div>
+    </aside>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYuB2Y4YO5KOXGEZ7eoEGvvc1d26izkKU"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
